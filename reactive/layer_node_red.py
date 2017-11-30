@@ -14,8 +14,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # pylint: disable=c0111,c0301,c0325,c0103,r0913,r0902,e0401,C0302, R0914
-import subprocess as sp
+import os
 import shutil
+import subprocess as sp
 from charms.reactive import when, when_not, set_state
 from charmhelpers.core.hookenv import status_set, open_port
 from charmhelpers.core.host import service_start
@@ -23,8 +24,11 @@ from charmhelpers.core.host import service_start
 @when('apt.installed.nodejs')
 @when_not('layer-node-red.installed')
 def install_layer_node_red():
+    if not os.path.isdir('/root/.node-red'):
+        os.mkdir('/root/.node-red')
     sp.check_call(['sudo', 'npm', 'install', '-g', '--unsafe-perm', 'node-red'])
     shutil.copyfile('files/nodered.service', '/etc/systemd/system/nodered.service')
+    sp.check_call(['sudo', 'systemctl', 'daemon-reload'])
     service_start('nodered')
     open_port(1880)
     set_state('layer-node-red.installed')
