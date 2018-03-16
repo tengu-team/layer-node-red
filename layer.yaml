@@ -1,4 +1,4 @@
-includes: ['layer:basic', 'layer:apt', 'interface:http']
+includes: ['layer:basic', 'layer:apt', 'layer:metrics', 'interface:http']
 repo: git@github.com/tengu-team/layer-node-red
 options:
   apt:
